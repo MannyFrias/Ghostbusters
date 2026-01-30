@@ -1,0 +1,17 @@
+{
+  "dependencies": {
+    "husky": "^9.1.7"
+  },
+  "scripts": {
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.6",
+    "@babel/parser": "^7.28.6",
+    "@babel/traverse": "^7.28.6",
+    "@types/babel__core": "^7.20.5",
+    "@types/babel__parser": "^7.1.5",
+    "@types/babel__traverse": "^7.28.0",
+    "@types/node": "^25.1.0"
+  }
+}
