@@ -3,9 +3,10 @@
     "version": "1.0.0",
     "description": "AST-based Git hook to prevent ghost routes",
     "main": "src/index.js",
+    "type":"module",
     "scripts": {
       "prepare": "husky install",
-      "ghostbusters": "ts-node scripts/run",
+      "ghostbusters": "node scripts/index.js",
       "test": "jest"
   },
   "dependencies": {
