@@ -1,11 +1,11 @@
 {
-    "name": "ghostbuster",
+    "name": "ghostbusters",
     "version": "1.0.0",
     "description": "AST-based Git hook to prevent ghost routes",
     "main": "src/index.js",
     "scripts": {
       "prepare": "husky install",
-      "ghostbuster": "ts-node scripts/run",
+      "ghostbusters": "ts-node scripts/run",
       "test": "jest"
   },
   "dependencies": {
