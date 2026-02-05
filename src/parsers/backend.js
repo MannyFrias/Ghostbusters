@@ -101,7 +101,7 @@ function extractRoutePath (arg) {
     if(arg.type === 'TemplateLiteral') {
         //Quasis is a compiler term refering to the static text parts of a template string 
         //using .map and .join to turn '/api/items/${id}/detail' into '/api/items/*/details'
-        return arg.quasis.map((q) => q.value.raw).join('');
+        return arg.quasis.map((q) => q.value.raw).join('*');
     }
     
     return null;

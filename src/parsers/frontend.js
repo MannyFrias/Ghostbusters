@@ -68,14 +68,13 @@ export async function parseFrontend(filepath){
         // Looks for axios.post(), axios.delete(), etc.
         else if (
           callee.type === "MemberExpression" &&
+          callee.object.type === "Identifier" &&
           callee.object.name === "axios"
         ) {
           // property.name is 'get', 'post', 'delete', etc.
           const method = callee.property.name.toUpperCase();
           extractRoute(args[0], method, results, filepath, node.loc.start.line);
         }
-
-
       },
     });
   } catch (error) {
