@@ -1,17 +1,26 @@
-// src/core/engine.ts
-import { GhostbusterReport } from "./types";
-import { matchRoutes } from "./matcher";
-//import { parseFrontend } from "../parsers/frontend";
-//import { parseBackend } from "../parsers/backend";
+// src/core/engine.js
+import { matchRoutes } from "./matcher.js";
+import { parseFrontend } from "../parsers/frontend.js";
+import { parseBackend } from "../parsers/backend.js";
 
-// Engine options type
-export type EngineOptions = {
-  frontendGlobs: string[];
-  backendGlobs: string[];
-  ignore?: string[];
-};
-// Main engine function
-export async function runGhostbuster(opts: EngineOptions): Promise<GhostbusterReport> {
+/**
+ * @typedef {Object} EngineOptions
+ * @property {string[]} frontendGlobs
+ * @property {string[]} backendGlobs
+ * @property {string[]=} ignore
+ */
+
+/**
+ * Main engine function:
+ * 1) parse frontend calls
+ * 2) parse backend routes
+ * 3) match them
+ * 4) return a report + stats
+ *
+ * @param {EngineOptions} opts
+ * @returns {Promise<import("./types.js").GhostbusterReport>}
+ */
+export async function runGhostbuster(opts) {
   const calls = await parseFrontend(opts.frontendGlobs, opts.ignore);
   const routes = await parseBackend(opts.backendGlobs, opts.ignore);
 
