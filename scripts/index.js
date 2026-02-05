@@ -1,3 +1,4 @@
+///nothing
 const { scan } = require('../src/index');
 
 // Tells the tool what to look at in the repo that gets checked
