@@ -8,3 +8,7 @@ app.get('/api/users', (req, res) => {
 app.post('/api/users', (req, res) => {
     res.json({ created: true });
 });
+
+app.get('/api/users:id', (req, res) => {
+    res.json({users: []}); 
+})
