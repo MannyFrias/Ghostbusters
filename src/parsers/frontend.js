@@ -68,6 +68,7 @@ export async function parseFrontend(filepath){
         // Looks for axios.post(), axios.delete(), etc.
         else if (
           callee.type === "MemberExpression" &&
+          callee.object &&
           callee.object.type === "Identifier" &&
           callee.object.name === "axios"
         ) {

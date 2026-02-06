@@ -1,4 +1,5 @@
 // src/core/engine.js
+import { glob } from "glob";
 import { matchRoutes } from "./matcher.js";
 import { parseFrontend } from "../parsers/frontend.js";
 import { parseBackend } from "../parsers/backend.js";
@@ -21,8 +22,27 @@ import { parseBackend } from "../parsers/backend.js";
  * @returns {Promise<import("./types.js").GhostbusterReport>}
  */
 export async function runGhostbuster(opts) {
-  const calls = await parseFrontend(opts.frontendGlobs, opts.ignore);
-  const routes = await parseBackend(opts.backendGlobs, opts.ignore);
+  //expand glob file paths
+  const frontendFiles = await glob(opts.frontendGlobs, {ignore: opts.ignore || []});
+  const backendFiles = await glob(opts.backendGlobs, {ignore: opts.ignore || []});
+
+  console.log(`Found ${frontendFiles.length} frontend file(s)`);
+  console.log(`Found ${backendFiles.length} backend file(s)`);
+
+  const calls = [];
+  for(const file of frontendFiles) {
+    const result = await parseFrontend(file); 
+    calls.push(...result); 
+  }
+
+  const routes = []; 
+  for (const file of backendFiles) {
+    const result = await parseBackend(file); 
+    routes.push(...result)
+  }
+
+
+
 
   const result = matchRoutes(calls, routes);
 
@@ -39,8 +59,8 @@ export async function runGhostbuster(opts) {
 }
 // placeholder file
 
-const runEngine = () => {
-    console.log("Engine logic is initialized...");
-}
+// const runEngine = () => {
+//     console.log("Engine logic is initialized...");
+// }
 
-module.exports = { runEngine };
+// module.exports = { runEngine };

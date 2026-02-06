@@ -3,22 +3,23 @@
     "version": "1.0.0",
     "description": "AST-based Git hook to prevent ghost routes",
     "main": "src/index.js",
-    "type":"module",
+    "type": "module",
     "scripts": {
-      "prepare": "husky install",
-      "ghostbusters": "node scripts/index.js",
-      "test": "jest"
-  },
-  "dependencies": {
-    "husky": "^9.1.7"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.28.6",
-    "@babel/parser": "^7.28.6",
-    "@babel/traverse": "^7.28.6",
-    "@types/babel__core": "^7.20.5",
-    "@types/babel__parser": "^7.1.5",
-    "@types/babel__traverse": "^7.28.0",
-    "@types/node": "^25.1.0"
-  }
+        "prepare": "husky install",
+        "ghostbusters": "node scripts/index.js",
+        "test": "jest"
+    },
+    "dependencies": {
+        "glob": "^13.0.1",
+        "husky": "^9.1.7"
+    },
+    "devDependencies": {
+        "@babel/core": "^7.28.6",
+        "@babel/parser": "^7.28.6",
+        "@babel/traverse": "^7.28.6",
+        "@types/babel__core": "^7.20.5",
+        "@types/babel__parser": "^7.1.5",
+        "@types/babel__traverse": "^7.28.0",
+        "@types/node": "^25.1.0"
+    }
 }

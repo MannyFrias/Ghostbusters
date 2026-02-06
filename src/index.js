@@ -1,10 +1,10 @@
-const { runGhostbuster } = require('./core/engine');
+import { runGhostbuster } from './core/engine.js';
 
 async function scan(config) {
     return await runGhostbuster(config);
 }
 
-module.exports = { scan };
+export { scan };
 
 
 // old code from before UPDATE
