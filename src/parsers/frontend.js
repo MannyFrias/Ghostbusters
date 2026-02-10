@@ -22,6 +22,9 @@ export async function parseFrontend(filepath){
   //create an empyt array to hold the routes we'll find. As we find fetch calls, we will push them into this list. This is what the function returns at the very end
   const results = [];
 
+  //setting up an array to track variable names that are actually axios instances 
+  const axiosAliases = new Set(['axios']);
+
   try {
     // 1. Read the file content: open 'filePath' and read all the text into a variable called 'code'
     const code = await fs.readFile(filepath, "utf-8"); //interpret the file as a string of text. If left out, Node returns a Buffer (raw hexadecimal numbers), which Babel cannot read.
@@ -36,6 +39,23 @@ export async function parseFrontend(filepath){
 
     // 3. Traverse the tree. Babel Traverse will visit every node in the AST
     traverse(tree, {
+
+      //Search for axios aliases first
+      VariableDeclarator({ node }) {
+        //search for const api = axios.creator()
+        if (node.init && node.init.type === 'CallExpression') {
+          const { callee } = node.init;
+          if (
+            callee.type === 'MemberExpression' &&
+            callee.object.name === 'axios' &&
+            callee.property.name === 'create'
+          ) {
+            //when an axios instance is found then add the variable to our allowed list
+            axiosAliases.add(node.id.name)
+          }
+        }
+      },
+
       CallExpression({ node }) {
         
         const { callee, arguments:args } = node;
@@ -64,12 +84,13 @@ export async function parseFrontend(filepath){
           }
           extractRoute(args[0], method, results, filepath, node.loc.start.line);
         }
-        //MANAGE AXIOS CALL
+        //MANAGE AXIOS CALL & any aliases
         // Looks for axios.post(), axios.delete(), etc.
         else if (
           callee.type === "MemberExpression" &&
           callee.object.type === "Identifier" &&
-          callee.object.name === "axios"
+          //checking in axios aliases so is it axios or does it have a known alias like api
+          axiosAliases.has(callee.object.name)
         ) {
           // property.name is 'get', 'post', 'delete', etc.
           const method = callee.property.name.toUpperCase();
@@ -101,7 +122,7 @@ function extractRoute (arg, method, results, file, line){
     else if(arg.type === 'TemplateLiteral'){
         //Quasis is a compiler term refering to the static text parts of a template string 
         //using .map and .join to turn '/api/items/${id}/detail' into '/api/items/*/details'
-        route = arg.quasis.map((q) => q.value.raw).join("*");
+        route = arg.quasis.map((q) => q.value.raw).join('*');
     }
     if(route) {
         results.push({route, method, file, line})
