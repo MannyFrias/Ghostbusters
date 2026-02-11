@@ -92,7 +92,13 @@ async function main() {
         console.log(output);
     }
   }
-
-
+//Exit Logic
+//If there are unmatched routes, we want to exit with a non-zero code to prevent the commit
+  if(report && report.unmatched && report.unmatched.length > 0) {
+    process.exit(1);
+  } catch (error) {
+    console.error(`Error running Ghostbusters: ${error.message}`);
+    process.exit(1);
+  } 
 }
 
