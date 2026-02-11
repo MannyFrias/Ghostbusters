@@ -49,7 +49,7 @@ async function main() {
   if(command === '--help' || command === '-h') {
     showHelp();
     return;
-  };
+  }
     //--2. Handle 'init'-- //being specific to avoid overreach if someone has a file named 'init' in their project
   if (command === 'init') {
     try {
@@ -88,7 +88,7 @@ async function main() {
     //Safety check: make sure Enginve actually returned something   
     if (!report) {
         throw new Error('Engine returned no report.');
-    };
+    }
 
     if (isJson) {
         //JSON output
@@ -97,7 +97,7 @@ async function main() {
         //Formatted terminal output
         const output = formatReport(report);
         console.log(output);
-    };
+    }
   
 //--5.Exit Logic--
 //If there are unmatched routes, we want to exit with a non-zero code to prevent the commit
