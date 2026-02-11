@@ -4,9 +4,10 @@ import { scan } from '../src/index.js';
 // Tells the tool what to look at in the repo that gets checked
 // Will need to adjust paths to point to app being tested, not our tool's own source code
 const CONFIG = {
-    frontendGlobs: ['./test/client/**/*.js'],  // Do we need a File Walker to create a list of actual files?
-    backendGlobs: ['./test/server/**/*.js']
-}
+    frontendGlobs: ["./test/client/**/*.{js,jsx,ts,tsx}"],
+  backendGlobs: ["./test/server/**/*.{js,ts}"],
+  ignore: ["**/node_modules/**", "**/dist/**"],
+};
 
 async function catchGhost() {
     console.log("Ghostbuster: Looking for unmatched routes...");

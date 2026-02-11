@@ -105,7 +105,7 @@ function extractRoute (arg, method, results, file, line){
         route = arg.quasis.map((q) => q.value.raw).join("*");
     }
     if(route) {
-        results.push({route, method, file, line})
+        results.push({path:route, method, file, line})
     }
 }
 

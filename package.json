@@ -10,7 +10,7 @@
         "test": "jest"
     },
     "dependencies": {
-        "glob": "^13.0.1",
+        "glob": "^13.0.2",
         "husky": "^9.1.7"
     },
     "devDependencies": {
