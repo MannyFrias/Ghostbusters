@@ -55,7 +55,7 @@ export async function parseBackend(filepath) {
           // We only care about these specific Express route handlers. So it wouldn't matter if we're using app or router
           const expressMethods = ['get', 'post', 'put', 'delete', 'patch'];
 
-          // IS IT AN EXPRESS ROUTE?
+          // HANDLES A STANDARD ROUTE (app.get, router.post)
           if (expressMethods.includes(propertyName)) {
              
              // EXTRACT THE ROUTE
@@ -96,7 +96,7 @@ function extractRoutePath (arg) {
     if (arg.type === 'StringLiteral') {
         return arg.value;
     }
-    
+
     //if arg wasn't a string literal then babel uses "TemplateLiteral" to check if the arg has a template literal
     if(arg.type === 'TemplateLiteral') {
         //Quasis is a compiler term refering to the static text parts of a template string 
