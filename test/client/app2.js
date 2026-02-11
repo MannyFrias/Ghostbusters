@@ -12,3 +12,7 @@ async function getGhostRoute() {
     const response = await fetch('/api/ghost');
     return response.json();
 }
+async function getGhostRoute2() {
+    const response = await fetch('/api/ghost');
+    return response.json();
+}
