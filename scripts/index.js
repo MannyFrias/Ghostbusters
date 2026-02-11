@@ -23,7 +23,7 @@ async function catchGhost() {
 
             report.unmatched.forEach((ghost) => {
                 // Uses data from parser
-                console.error(`[${ghost.method}] ${ghost.route}`);
+                console.error(`[${ghost.method}] ${ghost.path}`);
                 console.error(` Source: ${ghost.file} (Line ${ghost.line})`);
             })
             // Stops the process with an error code

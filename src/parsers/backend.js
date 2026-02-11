@@ -65,9 +65,9 @@ export async function parseBackend(filepath) {
              //use helper function to extra
              const path = extractRoutePath(arg);
 
-             if (route) {
+             if (path) {
                 results.push({
-                    path: route,
+                    path,
                     method: propertyName.toUpperCase(),
                     file: filepath,
                     line: node.loc.start.line
