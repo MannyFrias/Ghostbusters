@@ -11,6 +11,8 @@ function pathMatches(callPath, routePath) {
   const b = normalizePath(routePath).split("/").filter(Boolean);
 
   if (a.length !== b.length) return false;
+  // If either is not a string, we can't compare (shouldn't happen if normalized)
+  if (typeof callPath !== "string" || typeof routePath !== "string") return false;
 
   for (let i = 0; i < a.length; i++) {
     const segA = a[i];
