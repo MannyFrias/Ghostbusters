@@ -56,52 +56,61 @@ export async function parseFrontend(filepath){
         }
       },
 
-      CallExpression({ node }) {
-        
-        const { callee, arguments:args } = node;
-        
-        //FETCH first
-        // Check if the function name is 'fetch'. In a function call, the "callee" is the thing being executed.
-        if (callee.type === "Identifier" && callee.name === "fetch") {
-          //we're going to assume "GET" is the default method
-          let method = "GET";
+      //since we need to consider how to handle fetch variables and will now use path instead of node in the CallExpression
+      CallExpression({ path }) {
+        const  { node } = path;
+        const { callee, arguments: args } = node;
+        let routeArg = args[0];
 
-          //check for the options object - for example fetch('/url', { method: 'POST })
+        //FETCH HANDLER
+        if (callee.type === 'Identifier' && callee.name === 'fetch') {
+          let method = 'GET';
           const options = args[1];
 
-          if (options && options.type === "ObjectExpression") {
-            
-            //then look for the property named "method" inside the object
-            const methodProp = options.properties.find(
-              (prop) =>
-                prop.key.type === "Identifier" && prop.key.name === "method",
+          if (options && options.type === 'ObjectExpression') {
+            const methodProp = options.properties.find(prop => 
+              prop.key.type === 'Identifier' && prop.key.name === 'method'
             );
 
-            //if method: POST, then grab the value
-            if (methodProp && methodProp.value.type === "StringLiteral") {
+            if (methodProp && methodProp.value.type === 'StringLiteral') {
               method = methodProp.value.value.toUpperCase();
             }
           }
-          extractRoute(args[0], method, results, filepath, node.loc.start.line);
+
+          // If it's a fetch variable (e.g. fetch(url)), let's find the source
+          if (routeArg && routeArg.type === "Identifier") {
+            const binding = path.scope.getBinding(routeArg.name);
+
+            // If we find where it was defined, and it was a string...
+            if (
+              binding &&
+              binding.path.node.init &&
+              (binding.path.node.init.type === "StringLiteral" ||
+                binding.path.node.init.type === "TemplateLiteral")
+            ) {
+              // ...SWAP IT. We pretend the variable IS that original string node.
+              routeArg = binding.path.node.init;
+            }
+          }
+          extractRoute(routeArg, method, results, filepath, node.loc.start.line);
         }
-        //MANAGE AXIOS CALL & any aliases
+        //MANAGE AXIOS CALL & axios aliases
         // Looks for axios.post(), axios.delete(), etc.
         else if (
           callee.type === "MemberExpression" &&
           callee.object.type === "Identifier" &&
           //checking in axios aliases so is it axios or does it have a known alias like api
-          axiosAliases.has(callee.object.name)
-        ) {
+          axiosAliases.has(callee.object.name) // this checks the Set
+        ){
           // property.name is 'get', 'post', 'delete', etc.
           const method = callee.property.name.toUpperCase();
-          extractRoute(args[0], method, results, filepath, node.loc.start.line);
+          extractRoute(routeArg, method, results, filepath, node.loc.start.line);
         }
       },
     });
   } catch (error) {
     console.error(`Error parsing frontend file ${filepath}:`, error);
   }
-
   return results;
 }
 
@@ -128,4 +137,28 @@ function extractRoute (arg, method, results, file, line){
         results.push({route, method, file, line})
     }
 }
+// -----------------OLD CODE ----------------------------------------------
+        //FETCH first might not need to use now since we're using path now
+        // Check if the function name is 'fetch'. In a function call, the "callee" is the thing being executed.
+        // if (callee.type === "Identifier" && callee.name === "fetch") {
+        //   //we're going to assume "GET" is the default method
+        //   let method = "GET";
 
+          //check for the options object - for example fetch('/url', { method: 'POST })
+        //   const options = args[1];
+
+        //   if (options && options.type === "ObjectExpression") {
+            
+        //     //then look for the property named "method" inside the object
+        //     const methodProp = options.properties.find(
+        //       (prop) =>
+        //         prop.key.type === "Identifier" && prop.key.name === "method",
+        //     );
+
+        //     //if method: POST, then grab the value
+        //     if (methodProp && methodProp.value.type === "StringLiteral") {
+        //       method = methodProp.value.value.toUpperCase();
+        //     }
+        //   }
+        //   extractRoute(args[0], method, results, filepath, node.loc.start.line);
+        // }
