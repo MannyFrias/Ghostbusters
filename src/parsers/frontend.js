@@ -98,6 +98,7 @@ export async function parseFrontend(filepath){
         // Looks for axios.post(), axios.delete(), etc.
         else if (
           callee.type === "MemberExpression" &&
+          callee.object &&
           callee.object.type === "Identifier" &&
           //checking in axios aliases so is it axios or does it have a known alias like api
           axiosAliases.has(callee.object.name) // this checks the Set
@@ -134,7 +135,7 @@ function extractRoute (arg, method, results, file, line){
         route = arg.quasis.map((q) => q.value.raw).join('*');
     }
     if(route) {
-        results.push({route, method, file, line})
+        results.push({ path: route, method, file, line})
     }
 }
 // -----------------OLD CODE ----------------------------------------------

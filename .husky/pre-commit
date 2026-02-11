@@ -1,0 +1,4 @@
+#!/usr/bin/env sh
+
+echo "🔍 Pre-commit hook triggered!"
+node scripts/index.js
