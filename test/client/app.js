@@ -8,7 +8,3 @@ async function createUser(data) {
     return response.json();
 }
 
-async function getGhostRoute() {
-    const response = await fetch('/api/ghost');
-    return response.json();
-}

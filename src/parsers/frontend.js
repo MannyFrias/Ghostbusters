@@ -57,7 +57,7 @@ export async function parseFrontend(filepath){
       },
 
       //since we need to consider how to handle fetch variables and will now use path instead of node in the CallExpression
-      CallExpression({ path }) {
+      CallExpression(path) {
         const  { node } = path;
         const { callee, arguments: args } = node;
         let routeArg = args[0];
