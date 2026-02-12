@@ -8,3 +8,8 @@ async function createUser(data) {
     return response.json();
 }
 
+async function deleteUser (id) {
+    const res = await axios.delete(`/api/users/${id}`); 
+    return res.data; 
+}
+

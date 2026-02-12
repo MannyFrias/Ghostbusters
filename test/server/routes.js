@@ -11,4 +11,8 @@ app.post("/api/users", (req, res) => {
 
 // Notice: NO /api/ghost route here
 
+app.delete("/api/users/:id", (req, res) => {
+    res.json({ user: deleted });
+})
+
 export default app;
