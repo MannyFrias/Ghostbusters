@@ -17,7 +17,7 @@ const command = args[0];
 
 //Flags(Boolean checks)
 const isSilent = args.includes('--silent') || args.includes('-s');
-const isJson = args.includes('--json')||args.includes('-j');
+const isJson = args.includes('--json')|| args.includes('-j');
 
 /**
  * Help Menu
@@ -46,7 +46,7 @@ function showHelp() {
 
 async function main() {
      //--1.Handle help--
-  if(command === '--help' || command === '-h') {
+  if (command === '--help' || command === '-h') {
     showHelp();
     return;
   }
@@ -80,7 +80,7 @@ async function main() {
   };
 
   try {
-    if(!isSilent && !isJson) console.log(chalk.blue('Running Ghostbusters 👻...'));
+    if (!isSilent && !isJson) console.log(chalk.blue('Running Ghostbusters 👻...'));
     //We pass the config to our core engine
     const report = await runGhostbusters(config);
 
@@ -105,16 +105,16 @@ async function main() {
   //check for ghosts using chaining for safety 
   const ghostCount = report.unmatched?.length || 0;
 
-    if(ghostCount > 0) {
+    if (ghostCount > 0) {
         //only log if we aren't in slient/json mode (let the earler output speak)
-        if(!isSilent && !isJson) {
+        if (!isSilent && !isJson) {
             console.log(chalk.red.bold(`Commit blocked: ${ghostCount} ghost route(s) detected.`));
             console.log(chalk.yellow('Please fix the unmatched routes before committing.'));
         }
         process.exit(1);//stop the commit
     }
     //Success
-    if(!isSilent && !isJson) {
+    if (!isSilent && !isJson) {
         console.log('No ghost routes found. Safe to commit! ✅');
   } 
   process.exit(0);
