@@ -1,19 +1,15 @@
 /* =========================================================================
    TL;DR - HIGH LEVEL OVERVIEW
    =========================================================================
-   WHAT THIS DOES:
-   This file acts as the "Backend Reader." Its job is to open Express/Node
-   files, scan the code, and hunt for route definitions like `app.get()`
-   or `router.post()`.
+   GOAL: 
+   Scan backend files (Express/Node) to find two things:
+   1. DEFINED ROUTES: Actual endpoints like app.get('/users')
+   2. MOUNT POINTS: Router prefixes like app.use('/api', userRouter)
 
-   HOW IT WORKS:
-   1. It takes a file path as input.
-   2. It turns the code into a Tree (AST).
-   3. It looks for "Member Expressions" (calls with a dot, like `obj.method()`).
-   4. It checks if the method is an HTTP verb (get, post, put, delete).
-   5. It grabs the path string (e.g., '/api/users') and saves it.
+   OUTPUT:
+   An array  of objects. Each object is either a "ROUTE" or a "MOUNT_POINT".
+   The Matcher will use this list to see if the Frontend is calling valid URLs.
    ========================================================================= */
-
 import fs from 'fs/promises'; // Use promises for async reading
 import parser from '@babel/parser';
 import traversePkg from '@babel/traverse';
@@ -24,25 +20,25 @@ export async function parseBackend(filepath) {
   const results = [];
 
   try {
-    // STEP 1: READ THE FILE
-    // Open 'filePath' and read text into 'code'
+    // READ THE FILE
+    // Open the files and turn it into a giant string of text
     const code = await fs.readFile(filepath, 'utf-8');
 
-    // STEP 2: PARSE THE CODE
-    // Turn 'code' into an AST
+    // PARSE THE TEXT
+    // Turn string into AST
     // Enable "typescript" plugin (common in backends) even if using JS.
     const tree = parser.parse(code, {
       sourceType: 'module',
       plugins: ['typescript']
     });
 
-    // STEP 3: TRAVERSE THE TREE
+    // TRAVERSE THE TREE
     traverse(tree, {
       
-      // We are looking for "CallExpressions" (any function call)
+      // We are looking for "CallExpressions" (any function call like app.get(), router.post(), app.use())
       CallExpression({ node }) {
         
-        // CHECK 1: IS IT A METHOD CALL? (Dot Notation)
+        // CHECK: IS IT A METHOD CALL? (Dot Notation)
         // We look for "MemberExpression" (e.g., app.get)
         const { callee } = node;
 
@@ -57,22 +53,42 @@ export async function parseBackend(filepath) {
 
           // HANDLES A STANDARD ROUTE (app.get, router.post)
           if (expressMethods.includes(propertyName)) {
-             
-             // EXTRACT THE ROUTE
-             // Grab the first argument (arguments[0])
-             const arg = node.arguments[0];
+            // EXTRACT THE ROUTE
+            // Grab the first argument (arguments[0] ... the route path so app.get('/users').. then the arg = '/users')
+            const arg = node.arguments[0];
 
-             //use helper function to extra
-             const path = extractRoutePath(arg);
+            //use helper function to extract route and make it a clean string
+            const path = extractRoutePath(arg);
 
-             if (path) {
-                results.push({
-                    path,
-                    method: propertyName.toUpperCase(),
-                    file: filepath,
-                    line: node.loc.start.line
-                });
-             }
+            //VALIDATOR: is this an actual route? Should filter out something like: myMap.get('key')
+            if (path && (path.startsWith("/") || path === "*")) {
+              results.push({
+                path: path,
+                method: propertyName.toUpperCase(),
+                file: filepath,
+                line: node.loc.start.line,
+              });
+            }
+          }
+          // --- MOUNT POINT --- to help with prefix detection
+          //searching for: app.use('/api', router)
+          else if (propertyName === 'use') {
+            const args = node.arguments;
+
+            //Checks if arg[0] is a string (the prefix: '/api') and arg[1] 
+            if (
+              args.length >= 2 &&
+              args[0].type === 'StringLiteral' &&
+              args[1].type === 'Identifier'
+            ) {
+              results.push({
+                type: 'MOUNT_POINT',
+                path: args[0].value,
+                target: args[1].name,
+                file: filepath,
+                line: node.loc.start.line
+              });
+            }
           }
         }
       }
@@ -82,7 +98,7 @@ export async function parseBackend(filepath) {
     // Print "Error parsing backend file" without crashing the app
     console.error(`Error parsing backend file ${filepath}:`, error);
   }
-  // Return the list of findings
+  // Return the list of routes and mounts that we have found
   return results;
 }
 
