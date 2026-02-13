@@ -5,10 +5,10 @@
  * The entry point for the Ghostbusters pre-commit hook.
  */
 
-import { runGhostbusters } from '../src/core/engine.js';//if we are sticking to ghostbusters (plural) those changes need to be made in core/engine.js as well
+import { runGhostbuster as runGhostbusters } from '../src/core/engine.js';//if we are sticking to ghostbusters (plural) those changes need to be made in core/engine.js as well
 import { formatReport } from '../src/core/format.js'
 import { setupHusky } from './init.js';
-import path from 'path';
+import path from 'node:path';
 import chalk from 'chalk';
 
 //1. Parse CLI arguments
@@ -73,6 +73,7 @@ async function main() {
     }
 
   //--4. Default: run Ghostbusters--
+  //we assume user is running this from the root of their project 
   const config= {
     frontendGlobs: [path.join(process.cwd(), 'src/**/*.{js,jsx,ts,tsx}')],
     backendGlobs: [path.join(process.cwd(), 'server/**/*.{js,ts}')],
