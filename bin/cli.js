@@ -4,8 +4,8 @@
  * Ghostbusters CLI
  * The entry point for the Ghostbusters pre-commit hook.
  */
-
-import { runGhostbusters } from '../src/core/engine.js';//if we are sticking to ghostbusters (plural) those changes need to be made in core/engine.js as well
+//if engine gets changed we can remove the "as runGhostbusters" and just import it as runGhostbuster, but for now this is a safe way to avoid breaking changes while we finalize the naming convention
+import { runGhostbuster as runGhostbusters } from '../src/core/engine.js';//if we are sticking to ghostbusters (plural) those changes need to be made in core/engine.js as well
 import { formatReport } from '../src/core/format.js'
 import { setupHusky } from './init.js';
 import path from 'path';
