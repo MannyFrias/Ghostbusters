@@ -135,7 +135,11 @@ function extractRoute (arg, method, results, file, line){
         route = arg.quasis.map((q) => q.value.raw).join('*');
     }
     if(route) {
-        results.push({ path: route, method, file, line})
+      //check if the route is dynamic (contains a template literal) to help with matching later. We can still extract the static parts of a template literal,
+      //but we want to know if it had dynamic parts too since that affects how we match it to backend routes.
+        const isDynamic = arg.type === "TemplateLiteral";
+        results.push({ path: route, method, file, line, isDynamic });
+
     }
 }
 // -----------------OLD CODE ----------------------------------------------
