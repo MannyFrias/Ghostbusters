@@ -1,53 +1,54 @@
-# Ghostbusters 👻 
+# Ghostbusters 👻
+**Stop phantom endpoints from haunting your codebase.**
 
-[Ghostbusters](https://github.com/MannyFrias/Ghostbusters) is a [JavaScript](https://www.javascript.com/)-based utility designed to catch ghost routes in your [React](https://react.dev/)/[Express](https://expressjs.com/) project. The utility is designed to work at the point of commit.
+[Ghostbusters](https://github.com/MannyFrias/Ghostbusters) is a lightweight [JavaScript](https://www.javascript.com/) utility designed to identify "ghost routes" (unused or broken endpoints) in [React](https://react.dev/)-to-[Express](https://expressjs.com/) routing. By integrating directly into your Git workflow, it ensures that dead code is eliminated before it ever hits production.
 
-## 📇 Features  
-- **ESM Support:** Built using modern ECMAScript Modules
-- **Git Hooks:** Automates code quality checks via [Husky](https://typicode.github.io/husky/) 
-- **CLI Ready:** Includes a dedicated entry point for command-line usage
+## 📇 Features
+- **ESM Support:** Optimized for modern environments using ECMAScript Modules to provide a lightweight and efficient footprint.
+- **Git Hooks:** Leverages [Husky](https://typicode.github.io/husky/) to automate code quality checks, catching ghost routes at the point of commit.
+- **Dedicated CLI:** Includes a dedicated entry point for terminal-based route detection.
 
-## 🚦 Getting Started 
+## 🔍 How it Works
+Ghostbusters analyzes your codebase to identify discrepancies between your **frontend API calls** and **backend routes**. It specifically flags:
+* **Broken Calls:** Requests in your frontend that point to routes that don't exist in your backend.
 
-### Prerequisites 
+## 🚦 Getting Started
+
+### Prerequisites
 - Node.js
 - npm
 
-### Installation 
-1. Clone the repository:
+### Installation
 ```bash
-git clone https://github.com/MannyFrias/Ghostbusters.git
-```
-2. Install dependencies:
-```bash
-npm install
+npm install ghostbusters --save-dev
 ```
 
-## 🏛️ Project Structure  
-The repository is organized as follows:
-* `src/`: Contains the core logic and the primary CLI entry point for catching ghost routes.
-* `test/`: Test suites for quality control of the utility
-* `scripts/`: Automation and helper scripts used during development
-* `.husky/`: Configuration for pre-commit hooks to validate code before its pushed
-* `package.json`: Defines project dependencies and identifies the project as ESM, also hold license information
-
-## 🧼 Usage 
-To check your project for ghost routes, call the ghostbusters utility by runing it via the command line:
+## 🧼 Usage
+To scan your project for ghost routes, execute the utility from your command line:
 ```bash
-# Run the ghost route detection
-npm start 
+# Run the ghost route detection suite
+npm start
 ```
-## 🧪 Testing 
-A test file was created to ensure utility success
+
+## 🏛️ Project Structure
+* `.husky/`: Pre-commit hook configurations
+* `src/`: Core logic & CLI entry point
+* `test/`: Quality control test suites
+* `scripts/`: Development automation helpers
+* `package.json`: ESM configuration & dependencies
+
+
+## 🧪 Testing
+We use a dedicated test suite to ensure the detection logic is accurate.
 ```bash
 npm test
 ```
 ## ⚖️ License
-This project is licensed under the [MIT License](https://opensource.org/license/MIT)
+This project is licensed under the [MIT License](https://opensource.org/license/MIT).
 
-## ✍🏾 Contributors 
+## ✍🏾 Contributors
 * [Manny](https://github.com/MannyFrias)
-* [Mohammed](https://github.com/mohamedebada21)
+* [Mohamed](https://github.com/mohamedebada21)
 * [Erika](https://github.com/EriMarz)
 * [Christian](https://github.com/kowalsole)
 * [Robyn](https://github.com/5Runi)
