@@ -6,25 +6,28 @@ import { normalizePath } from "./normalize.js";
  * @param {string} routePath
  * @returns {boolean}
  */
+
+// Simple path matching that supports Express-style params (e.g. /users/:id).//
+//  Not a full router, just enough for our needs.
 function pathMatches(callPath, routePath) {
+  // Guard FIRST
+  if (typeof callPath !== "string" || typeof routePath !== "string") return false;
+
   const a = normalizePath(callPath).split("/").filter(Boolean);
   const b = normalizePath(routePath).split("/").filter(Boolean);
 
   if (a.length !== b.length) return false;
-  // If either is not a string, we can't compare (shouldn't happen if normalized)
-  if (typeof callPath !== "string" || typeof routePath !== "string") return false;
 
   for (let i = 0; i < a.length; i++) {
     const segA = a[i];
     const segB = b[i];
 
-    // Express param segment matches anything (":id")
-    if (segB.startsWith(":")) continue;
-
+    if (segB.startsWith(":")) continue; // Express param
     if (segA !== segB) return false;
   }
   return true;
 }
+
 
 /**
  * Frontend often doesn’t know method (UNKNOWN). We treat UNKNOWN as match-any.

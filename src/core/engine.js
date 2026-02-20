@@ -12,55 +12,36 @@ import { parseBackend } from "../parsers/backend.js";
  */
 
 /**
- * Main engine function:
- * 1) parse frontend calls
- * 2) parse backend routes
- * 3) match them
- * 4) return a report + stats
- *
  * @param {EngineOptions} opts
  * @returns {Promise<import("./types.js").GhostbusterReport>}
  */
 export async function runGhostbuster(opts) {
-  //expand glob file paths
-  const frontendFiles = await glob(opts.frontendGlobs, {ignore: opts.ignore || []});
-  const backendFiles = await glob(opts.backendGlobs, {ignore: opts.ignore || []});
+  const ignore = opts.ignore || ["**/node_modules/**", "**/dist/**"];
+
+  const frontendFiles = await glob(opts.frontendGlobs, { ignore });
+  const backendFiles = await glob(opts.backendGlobs, { ignore });
 
   console.log(`Found ${frontendFiles.length} frontend file(s)`);
   console.log(`Found ${backendFiles.length} backend file(s)`);
 
-  const calls = [];
-  for(const file of frontendFiles) {
-    const result = await parseFrontend(file); 
-    calls.push(...result); 
-  }
+  const calls = (await Promise.all(frontendFiles.map(parseFrontend))).flat();
+  const backendItems = (await Promise.all(backendFiles.map(parseBackend))).flat();
 
-  const routes = []; 
-  for (const file of backendFiles) {
-    const result = await parseBackend(file); 
-    routes.push(...result)
-  }
+  // Ignore MOUNT_POINT objects for now (until you fully support prefix resolving)
+  const routesOnly = backendItems.filter(
+    (r) => typeof r.method === "string" && typeof r.path === "string"
+  );
 
-
-
-
-  const result = matchRoutes(calls, routes);
+  const result = matchRoutes(calls, routesOnly);
 
   return {
     ...result,
     stats: {
       frontendCalls: calls.length,
-      backendRoutes: routes.length,
+      backendRoutes: routesOnly.length,
       matched: result.matched.length,
       unmatched: result.unmatched.length,
       unknown: result.unknown.length,
     },
   };
 }
-// placeholder file
-
-// const runEngine = () => {
-//     console.log("Engine logic is initialized...");
-// }
-
-// module.exports = { runEngine };
