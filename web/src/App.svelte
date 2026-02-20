@@ -4,14 +4,14 @@
 
   // these strings will be passed as CodeBlock components
 
-  const installCommand = "npm install ghostbusters --save-dev"; 
+  const installCommand = "npm install -D ghostbusters"; 
 
   const packageJsonScript = `scripts: {
   "ghostbusters": "ghostbusters scan --frontend ./src/client --backend ./src/server"
   }`; 
 
    const usageCommand = `# Basic scan
-  npx ghostbusters scan
+  npx ghostbusters init
 
 # Specify directories
   npx ghostbusters scan --frontend ./src/client --backend ./src/server
