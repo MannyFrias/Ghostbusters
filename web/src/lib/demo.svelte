@@ -1,7 +1,11 @@
 <script>
+  import { untrack } from "svelte"; 
+
     let visibleLines = $state([]); 
 
     let isPlaying = $state(false); 
+
+    let scrollContainer = $state(null);
 
     const outputLines = [
     { text: "$ npx ghostbusters scan", type: "command" },
@@ -54,37 +58,164 @@
    */
 
    $effect(() => {
-    playDemo(); 
+    untrack(() => {
+      playDemo(); 
+    })
    });
+
+
+   $effect(() => {
+    visibleLines.length; 
+
+    if (scrollContainer) {
+      scrollContainer.scrollTop = scrollContainer.scrollHeight;
+    }
+   })
 </script>
 
 <div class="demo-container">
-    <header class="demo-header">
-        <span class="window-buttons" aria-hidden="true"></span>
-        <span class="btn-red"></span>
-        <span class="btn-yellow"></span>
-        <span class="btn-green"></span>
-    </header>
-
+  <div class="demo-header">
+    <span class="window-buttons">
+      <span class="btn-red"></span>
+      <span class="btn-yellow"></span>
+      <span class="btn-green"></span>
+    </span>
     <span class="title">Terminal</span>
+    <button class="replay-btn" onclick={playDemo}>↻ Replay</button>
+  </div>
 
-    <button
-        class="replay-btn"
-        onclick={playDemo}
-        disabled={isPlaying}
-        type="button"
-    >
-        {isPlaying ? "Playing..." : "↻ Replay"}
-    </button>
-
-    <!-- terminal content -->
-     <div class="demo-content" role="log" aria-live="polite">
-        {#each visibleLines as line}
-        <div class="line {line.type}">{line.text}</div>
-        {/each}
-
-        {#if !isPlaying}
-        <span class="cursor" aria-hidden="true"></span>
+  <div class="demo-content" bind:this={scrollContainer}>
+    {#each visibleLines as line}
+      <div class="line {line.type}">
+        {#if line.type === "command"}
+          <span class="prompt">$</span>
         {/if}
-     </div>
+        {line.text}
+      </div>
+    {/each}
+    {#if isPlaying}
+      <span class="cursor">▊</span>
+    {/if}
+  </div>
 </div>
+
+<style>
+  .demo-container {
+    background: #0d1117;
+    border: 1px solid #30363d;
+    border-radius: 10px;
+    overflow: hidden;
+    max-width: 680px;
+    margin: 0 auto;
+    text-align: left;
+  }
+
+  .demo-header {
+    display: flex;
+    align-items: center;
+    background: #161b22;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid #21262d;
+    position: relative;
+  }
+
+  .window-buttons {
+    display: flex;
+    gap: 6px;
+  }
+
+  .btn-red,
+  .btn-yellow,
+  .btn-green {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+  }
+
+  .btn-red {
+    background: #ff5f57;
+  }
+
+  .btn-yellow {
+    background: #febc2e;
+  }
+
+  .btn-green {
+    background: #28c840;
+  }
+
+  .title {
+    flex: 1;
+    text-align: center;
+    font-size: 0.8rem;
+    color: #8b949e;
+    font-weight: 600;
+  }
+
+  .replay-btn {
+    background: none;
+    border: 1px solid #30363d;
+    color: #8b949e;
+    border-radius: 4px;
+    padding: 0.2rem 0.6rem;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .replay-btn:hover {
+    color: #e6edf3;
+    border-color: #58a6ff;
+  }
+
+  .demo-content {
+    padding: 1rem;
+    font-family: 'SF Mono', 'Fira Code', 'Courier New', monospace;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    max-height: 350px;
+    overflow-y: auto;
+  }
+
+  .line {
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+
+  .line.command {
+    color: #79c0ff;
+  }
+
+  .line.command .prompt {
+    color: #238636;
+    margin-right: 0.5em;
+    font-weight: 700;
+  }
+
+  .line.info {
+    color: #8b949e;
+  }
+
+  .line.warning {
+    color: #d29922;
+  }
+
+  .line.ghost {
+    color: #f85149;
+  }
+
+  .line.table {
+    color: #e6edf3;
+  }
+
+  .cursor {
+    color: #58a6ff;
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+  }
+</style>
