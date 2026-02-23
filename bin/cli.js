@@ -100,6 +100,8 @@ async function main() {
       console.log(JSON.stringify(report, null, 2));
     } else if (!isSilent) {
       //Formatted terminal output
+      console.table(report.stats);
+      
       const output = formatReport(report);
       console.log(output);
     }
