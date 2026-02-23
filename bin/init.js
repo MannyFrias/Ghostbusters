@@ -1,6 +1,7 @@
 import { exec as execCallback } from 'node:child_process';
 import { promisify } from 'node:util';
 import fs from 'node:fs/promises';
+import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import chalk from 'chalk';
 
@@ -14,6 +15,7 @@ import chalk from 'chalk';
  */
 
 const exec = promisify(execCallback);
+const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url)));//using URL to ensure compatibility with ESM and future Node.js versions
 
 export async function setupHusky() {
     const rootDir = process.cwd();
@@ -27,9 +29,10 @@ export async function setupHusky() {
         throw new Error('Git repository not found. Please initialize a git repository before setting up Husky.');
     }
 
-    //2. Install Husky (it will check if already installed and ensure up to date) as a dev dependency
-    console.log(chalk.blue('Installing Husky as a dev dependency...'));
+    //2. Install Husky and Ghostbusters as dev dependencies (it will check if already installed and ensure up to date) as a dev dependency
+    console.log(chalk.blue('Installing Husky and Ghostbusters...'));
     await exec('npm install husky --save-dev');
+    await exec(`npm install ${pkg.name} --save-dev`); //installing the package itself as a dev dependency to ensure it's available for the hook, even if the user doesn't have it globally installed
 
     //3. Initialize Husky (modern v9 approach, will not fail if already initialized)
     //npx husky init is indempotent (safe to run multiple times)
