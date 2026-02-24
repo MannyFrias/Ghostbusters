@@ -4,7 +4,7 @@
 
   // these strings will be passed as CodeBlock components
 
-  const installCommand = "npm install -D ghostbusters"; 
+  const installCommand = "npm install @ghostbusters/cli --save-dev"; 
 
   const packageJsonScript = `scripts: {
   "ghostbusters": "ghostbusters scan --frontend ./src/client --backend ./src/server"
@@ -102,7 +102,7 @@ const steps = [
     margin: 0;
     background-color: #0d1117;
     color: #e6edf3;
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMcaSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   }
 
   main {
