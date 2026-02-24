@@ -8,7 +8,7 @@
     let scrollContainer = $state(null);
 
     const outputLines = [
-    { text: "$ npx ghostbusters scan", type: "command" },
+    { text: "$ npx ghostbusters", type: "command" },
     { text: "", type: "blank" },
     { text: "🔍 Scanning frontend files...", type: "info" },
     { text: "   Found 4 fetch/axios calls", type: "info" },

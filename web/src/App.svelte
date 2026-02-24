@@ -1,6 +1,6 @@
 <script>
   import CodeBlock from "./lib/codeBlock.svelte";
-  import Demo from "./lib/demo.svelte";
+  import Demo from "./lib/Demo.svelte";
 
   // these strings will be passed as CodeBlock components
 
@@ -11,13 +11,14 @@
   }`; 
 
    const usageCommand = `# Basic scan
-  npx ghostbusters init
+  npx ghostbusters
 
-# Specify directories
-  npx ghostbusters scan --frontend ./src/client --backend ./src/server
+# options:
+  Run without console output
+  -s or --silent
 
-# Output as JSON
-  npx ghostbusters scan --format json`;
+# Output results as a JSON object for custom tooling
+  -j, --json`;
 
   const configFile = `// ghostbusters.config.js
 export default {
@@ -30,7 +31,7 @@ const steps = [
   {
     number: 1, 
     title: "Parse Frontend", 
-    description: "Scans youre react files for fetch and axios calls. Extracts the URL and HTTP method"
+    description: "Scans youre react files for fetch and axios calls."
   }, 
    {
       number: 2,
@@ -102,7 +103,7 @@ const steps = [
     margin: 0;
     background-color: #0d1117;
     color: #e6edf3;
-    font-family: -apple-system, BlinkMcaSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
   }
 
   main {
