@@ -1,9 +1,9 @@
-import { exec as execCallback } from 'node:child_process';
-import { promisify } from 'node:util';
-import fs from 'node:fs/promises';
-import { readFile } from 'node:fs/promises';
-import path from 'node:path';
-import chalk from 'chalk';
+import { exec as execCallback } from "node:child_process";
+import { promisify } from "node:util";
+import fs from "node:fs/promises";
+import { readFile } from "node:fs/promises";
+import path from "node:path";
+import chalk from "chalk";
 
 /**
  * setupHusky
@@ -15,66 +15,74 @@ import chalk from 'chalk';
  */
 
 const exec = promisify(execCallback);
-const pkg = JSON.parse(await readFile(new URL('../package.json', import.meta.url)));//using URL to ensure compatibility with ESM and future Node.js versions
+const pkg = JSON.parse(
+  await readFile(new URL("../package.json", import.meta.url)),
+); //using URL to ensure compatibility with ESM and future Node.js versions
 
 export async function setupHusky() {
-    const rootDir = process.cwd();
-    const huskyDir = path.join(rootDir, '.husky');
-    const preCommitPath = path.join(huskyDir, 'pre-commit');
+  const rootDir = process.cwd();
+  const huskyDir = path.join(rootDir, ".husky");
+  const preCommitPath = path.join(huskyDir, "pre-commit");
 
-    //1. Check for Git (as Husky requires a git repository)
-    try {
-        await fs.access(path.join(rootDir, '.git'));
-    } catch {
-        throw new Error('Git repository not found. Please initialize a git repository before setting up Husky.');
+  //1. Check for Git (as Husky requires a git repository)
+  try {
+    await fs.access(path.join(rootDir, ".git"));
+  } catch {
+    throw new Error(
+      "Git repository not found. Please initialize a git repository before setting up Husky.",
+    );
+  }
+
+  //2. Install Husky and Ghostbusters as dev dependencies (it will check if already installed and ensure up to date) as a dev dependency
+  console.log(chalk.blue("Installing Husky and Ghostbusters..."));
+  await exec("npm install husky --save-dev");
+  await exec(`npm install ${pkg.name} --save-dev`); //installing the package itself as a dev dependency to ensure it's available for the hook, even if the user doesn't have it globally installed
+
+  //3. Initialize Husky (modern v9 approach, will not fail if already initialized)
+  //npx husky init is indempotent (safe to run multiple times)
+  console.log(chalk.blue("Initializing Husky..."));
+  try {
+    await exec("npx husky init");
+  } catch (error) {
+    //If initialization fails, it may be because the .husky directory already exists, which is fine
+    console.warn(chalk.yellow("Husky initialization warning:"), error.message);
+  }
+
+  //4. Add Ghostbusters to the pre-commit hook
+  console.log(chalk.blue("Configuring pre-commit hook..."));
+  const command = "npx ghostbusters";
+
+  //Husky v9 pre-commit usually starts with a shebang and may have other commands, so we need to append our command if it's not already there
+  const shebang = "#!/bin/sh\n";
+
+  let currentContent = "";
+  try {
+    currentContent = await fs.readFile(preCommitPath, "utf-8");
+  } catch {
+    // File does not exist, it will be created with our command beginning with the shebang
+  }
+
+  if (!currentContent.includes(command)) {
+    //ensure we have the shebang and the command
+    let newContent = currentContent.replace("npm test", "").trim(); //remove npm test from Husky's default pre-commit if it exists, as it can interfere with our command, and trim to clean up any extra whitespace
+
+    //making sure shebang exists  
+    if (!newContent.startsWith("#!")) {
+      newContent = shebang + newContent;
     }
+    //3. assemble final content
 
-    //2. Install Husky and Ghostbusters as dev dependencies (it will check if already installed and ensure up to date) as a dev dependency
-    console.log(chalk.blue('Installing Husky and Ghostbusters...'));
-    await exec('npm install husky --save-dev');
-    await exec(`npm install ${pkg.name} --save-dev`); //installing the package itself as a dev dependency to ensure it's available for the hook, even if the user doesn't have it globally installed
+    //Add a newline if the file doesn't end, then add our command
+    const finalContent = newContent.endsWith("\n")
+      ? `${newContent}${command}\n`
+      : `${newContent}\n${command}\n`;
 
-    //3. Initialize Husky (modern v9 approach, will not fail if already initialized)
-    //npx husky init is indempotent (safe to run multiple times)
-    console.log(chalk.blue('Initializing Husky...'));
-    try {
-        await exec('npx husky init');
-    } catch (error) {
-        //If initialization fails, it may be because the .husky directory already exists, which is fine
-       console.warn(chalk.yellow('Husky initialization warning:'), error.message);
-    }
-
-    //4. Add Ghostbusters to the pre-commit hook
-    console.log(chalk.blue('Configuring pre-commit hook...'));
-    const command = 'npx ghostbusters';
-
-    //Husky v9 pre-commit usually starts with a shebang and may have other commands, so we need to append our command if it's not already there
-    const shebang = '#!/bin/sh\n';
-
-    let currentContent = '';
-    try {
-        currentContent = await fs.readFile(preCommitPath, 'utf-8');
-    } catch {
-        // File does not exist, it will be created with our command beginning with the shebang
-    }
-
-    if (!currentContent.includes(command)) {
-        //ensure we have the shebang and the command
-        let newContent = currentContent;
-
-        if (!newContent.startsWith('#!')) {
-            newContent = shebang + newContent;
-        }
-
-        //Add a newline if the file doesn't end, then add our command
-        newContent = newContent.endsWith('\n')
-         ? `${newContent}${command}\n` 
-         : `${newContent}\n${command}\n`;
-
-        await fs.writeFile(preCommitPath, newContent, { mode: 0o755 });
-        console.log(chalk.green('Ghostbusters and Husky united!'));
-    } else {
-        console.log(chalk.yellow('Pre-commit hook already exists. Skipping hook setup.'));
-    }
-    console.log(chalk.green.bold('Ghostbusters setup complete!'));                         
+    await fs.writeFile(preCommitPath, finalContent, { mode: 0o755 });
+    console.log(chalk.green("Ghostbusters and Husky united!"));
+  } else {
+    console.log(
+      chalk.yellow("Pre-commit hook already exists. Skipping hook setup."),
+    );
+  }
+  console.log(chalk.green.bold("Ghostbusters setup complete!"));
 }
