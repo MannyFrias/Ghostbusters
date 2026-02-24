@@ -1,6 +1,6 @@
 <script>
   import CodeBlock from "./lib/codeBlock.svelte";
-  import Demo from "./lib/Demo.svelte";
+  import Demo from "./lib/demo.svelte";
 
   // these strings will be passed as CodeBlock components
 
