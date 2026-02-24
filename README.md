@@ -1,7 +1,7 @@
 # Ghostbusters 👻
 **Stop phantom endpoints from haunting your codebase.**
 
-[Ghostbusters](https://ghostbusterscli.netlify.app/) is a lightweight [JavaScript](https://www.javascript.com/) utility designed to identify "ghost routes" (unused or broken endpoints) in [React](https://react.dev/)-to-[Express](https://expressjs.com/) routing. By integrating directly into your Git workflow, it ensures that dead code is eliminated before it ever hits production.
+[Ghostbusters](https://ghostbusterscli.dev) is a lightweight [JavaScript](https://www.javascript.com/) utility designed to identify "ghost routes" (unused or broken endpoints) in [React](https://react.dev/)-to-[Express](https://expressjs.com/) routing. By integrating directly into your Git workflow, it ensures that dead code is eliminated before it ever hits production.
 
 ## 📇 Features
 - **ESM Support:** Optimized for modern environments using ECMAScript Modules to provide a lightweight and efficient footprint.
