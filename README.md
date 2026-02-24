@@ -45,13 +45,14 @@ scripts: {
 ## 🧼 Usage
 ```bash
 # Basic scan
-  npx ghostbusters init
+  npx ghostbusters
 
-# Specify directories
-  npx ghostbusters scan --frontend ./src/client --backend ./src/server
+# options:
+  Run without console output
+  -s or --silent
 
-# Output as JSON
-  npx ghostbusters scan --format json
+# Output results as a JSON object for custom tooling
+  -j, --json
 ```
 
 ## 🏛️ Project Structure
