@@ -1,7 +1,7 @@
 # Ghostbusters 👻
 **Stop phantom endpoints from haunting your codebase.**
 
-[Ghostbusters](https://github.com/MannyFrias/Ghostbusters) is a lightweight [JavaScript](https://www.javascript.com/) utility designed to identify "ghost routes" (unused or broken endpoints) in [React](https://react.dev/)-to-[Express](https://expressjs.com/) routing. By integrating directly into your Git workflow, it ensures that dead code is eliminated before it ever hits production.
+[Ghostbusters](https://ghostbusterscli.netlify.app/) is a lightweight [JavaScript](https://www.javascript.com/) utility designed to identify "ghost routes" (unused or broken endpoints) in [React](https://react.dev/)-to-[Express](https://expressjs.com/) routing. By integrating directly into your Git workflow, it ensures that dead code is eliminated before it ever hits production.
 
 ## 📇 Features
 - **ESM Support:** Optimized for modern environments using ECMAScript Modules to provide a lightweight and efficient footprint.
@@ -20,14 +20,38 @@ Ghostbusters analyzes your codebase to identify discrepancies between your **fro
 
 ### Installation
 ```bash
-npm install ghostbusters --save-dev
+npm install @ghostbusters/cli --save-dev
+```
+
+### Configruation
+Create a ```ghostbusters.config.js``` in your project root to customize scan directories and ignore patterns.
+```bash
+// ghostbusters.config.js
+export default {
+  frontend: ["./src/client", "./src/components"],
+  backend: ["./src/server", "./src/api"],
+  ignore: ["node_modules", "dist", "*.test.js"]
+};
+```
+
+### Package.json Setup
+Add a script to your ```package.json``` for easy scanning.
+```bash
+scripts: {
+  "ghostbusters": "ghostbusters scan --frontend ./src/client --backend ./src/server"
+  }
 ```
 
 ## 🧼 Usage
-To scan your project for ghost routes, execute the utility from your command line:
 ```bash
-# Run the ghost route detection suite
-npm start
+# Basic scan
+  npx ghostbusters init
+
+# Specify directories
+  npx ghostbusters scan --frontend ./src/client --backend ./src/server
+
+# Output as JSON
+  npx ghostbusters scan --format json
 ```
 
 ## 🏛️ Project Structure
