@@ -101,7 +101,7 @@ async function main() {
     } else if (!isSilent) {
       //Formatted terminal output
       console.table(report.stats);
-      
+
       const output = formatReport(report);
       console.log(output);
     }
