@@ -1,6 +1,6 @@
 {
   "name": "@ghostbusters/cli",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "AST-based Git hook to prevent ghost routes",
   "main": "src/index.js",
   "type": "module",

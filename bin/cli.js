@@ -90,7 +90,7 @@ async function main() {
     const report = await runGhostbusters(config);
 
     //Output handling
-    //Safety check: make sure Enginve actually returned something
+    //Safety check: make sure engine actually returned something
     if (!report) {
       throw new Error("Engine returned no report.");
     }
