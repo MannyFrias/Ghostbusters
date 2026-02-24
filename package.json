@@ -1,12 +1,12 @@
 {
   "name": "@ghostbusters/cli",
-  "version": "1.0.2",
+  "version": "1.0.4",
   "description": "AST-based Git hook to prevent ghost routes",
   "main": "src/index.js",
   "type": "module",
   "bin": {
     "ghostbusters": "./bin/cli.js",
-    "ghostbusters-init": "./bin/init.js"
+    "ghostbusters-init": "./bin/cli.js"
   },
   "files": [
     "bin",
@@ -14,8 +14,6 @@
     "README.md"
   ],
   "scripts": {
-    "test": "jest",
-    "smoke-test": "node scripts/smoke-test.js",
     "start": "node bin/cli.js",
     "prepare": "husky"
   },
